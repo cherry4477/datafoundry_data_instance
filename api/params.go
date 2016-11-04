@@ -17,7 +17,7 @@ import (
 	"github.com/asiainfoLDP/datafoundry_data_instance/common"
 
 	"github.com/asiainfoLDP/datahub_commons/mq"
-	"github.com/astaxie/beego/logs"
+	//"github.com/astaxie/beego/logs"
 	"github.com/miekg/dns"
 	"net"
 	"sync"
@@ -546,7 +546,7 @@ func consulAddrPort() (string, string) {
 
 func init() {
 
-	logs.SetAlermSendingCallback(sendAlarm)
+	//logs.SetAlermSendingCallback(sendAlarm)
 }
 
 type alarmEvent struct {

@@ -354,6 +354,7 @@ func (bl *BeeLogger) Emergency(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
 	callbackSendAlarm(msg)
 	bl.writeMsg(LevelEmergency, format, v...)
+	os.Exit(1)
 }
 
 // Alert Log ALERT level message.

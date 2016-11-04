@@ -7,6 +7,7 @@ import (
 	"github.com/asiainfoLDP/datafoundry_data_instance/log"
 	"github.com/asiainfoLDP/datafoundry_data_instance/models"
 	"github.com/asiainfoLDP/datafoundry_data_instance/router"
+
 	"github.com/asiainfoLDP/datahub_commons/httputil"
 	"net/http"
 	"time"
@@ -37,12 +38,14 @@ func newService(httpPort int) *Service {
 }
 
 func main() {
-
 	//new a router
 	router.NewRouter(initRouter)
 
 	// init db
 	models.InitDB()
+
+	// init remote address
+	api.InitGateWay()
 
 	service := newService(SERVERPORT)
 	address := fmt.Sprintf(":%d", service.httpPort)
@@ -66,6 +69,4 @@ func init() {
 	models.SetPlatform = *local
 
 	log.InitLog()
-
-	api.InitGateWay()
 }

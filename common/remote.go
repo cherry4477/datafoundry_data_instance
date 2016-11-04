@@ -14,7 +14,7 @@ const (
 	GeneralRemoteCallTimeout = 10 // seconds
 )
 
-var logger  = log.GetLogger()
+var logger = log.GetLogger()
 
 //=============================================================
 //

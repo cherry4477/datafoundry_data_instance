@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/asiainfoLDP/datafoundry_data_instance/common"
+	"github.com/asiainfoLDP/datafoundry_data_instance/models"
 	"github.com/asiainfoLDP/datafoundry_data_instance/openshift"
 	userapi "github.com/openshift/origin/pkg/user/api/v1"
 	kapi "k8s.io/kubernetes/pkg/api/v1"
@@ -24,10 +25,14 @@ var (
 )
 
 func BuildServiceUrlPrefixFromEnv(name string, isHttps bool, addrEnv string, portEnv string) string {
-	addr := os.Getenv(addrEnv)
+	var addr string
+	if models.SetPlatform {
+		addr = "dev.dataos.io:8443"
+	} else {
+		addr = os.Getenv(addrEnv)
+	}
 	if addr == "" {
 		logger.Emergency("%s env should not be null", addrEnv)
-
 	}
 	if portEnv != "" {
 		port := os.Getenv(portEnv)
