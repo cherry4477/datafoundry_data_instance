@@ -29,8 +29,8 @@ const (
 	ErrorCodeAuthFailed        = 1305
 	ErrorCodePermissionDenied  = 1306
 	ErrorCodeInvalidParameters = 1307
-	ErrorCodeCreateCoupon      = 1308
-	ErrorCodeUseCoupon         = 1309
+	ErrorCodeCreateInstance    = 1308
+	ErrorCodeGrantUser         = 1309
 	ErrorCodeDeleteCoupon      = 1310
 	ErrorCodeGetCoupon         = 1311
 	ErrorCodeQueryCoupons      = 1312
@@ -57,11 +57,11 @@ func init() {
 	initError(ErrorCodePermissionDenied, "permission denied")
 	initError(ErrorCodeInvalidParameters, "invalid parameters")
 
-	initError(ErrorCodeCreateCoupon, "failed to create coupon")
-	initError(ErrorCodeUseCoupon, "failed to use a coupon")
-	initError(ErrorCodeProvideCoupons, "failed to provide coupons")
-	initError(ErrorCodeGetCoupon, "failed to retrieve coupon")
-	initError(ErrorCodeQueryCoupons, "failed to query coupons")
+	initError(ErrorCodeCreateInstance, "failed to create Instance")
+	//initError(ErrorCodeUseCoupon, "failed to use a coupon")
+	//initError(ErrorCodeProvideCoupons, "failed to provide coupons")
+	//initError(ErrorCodeGetCoupon, "failed to retrieve coupon")
+	//initError(ErrorCodeQueryCoupons, "failed to query coupons")
 
 	ErrorNone = GetError(ErrorCodeNone)
 	ErrorUnkown = GetError(ErrorCodeUnkown)
