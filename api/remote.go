@@ -2,12 +2,10 @@ package api
 
 import (
 	"fmt"
-	"github.com/asiainfoLDP/datafoundry_data_instance/common"
 	"github.com/asiainfoLDP/datafoundry_data_instance/models"
 	"github.com/asiainfoLDP/datafoundry_data_instance/openshift"
 	userapi "github.com/openshift/origin/pkg/user/api/v1"
 	kapi "k8s.io/kubernetes/pkg/api/v1"
-	"net/http"
 	"os"
 )
 
