@@ -20,7 +20,6 @@ const (
 //=================================================
 
 var (
-	RechargeSercice string
 	DataFoundryHost string
 )
 
@@ -56,8 +55,6 @@ func BuildServiceUrlPrefixFromEnv(name string, isHttps bool, addrEnv string, por
 func InitGateWay() {
 	DataFoundryHost = BuildServiceUrlPrefixFromEnv("DataFoundryHost", true, "DATAFOUNDRY_HOST_ADDR", "")
 	openshift.Init(DataFoundryHost, os.Getenv("DATAFOUNDRY_ADMIN_USER"), os.Getenv("DATAFOUNDRY_ADMIN_PASS"))
-
-	RechargeSercice = BuildServiceUrlPrefixFromEnv("ChargeSercice", false, os.Getenv("ENV_NAME_DATAFOUNDRYRECHARGE_SERVICE_HOST"), os.Getenv("ENV_NAME_DATAFOUNDRYRECHARGE_SERVICE_PORT"))
 }
 
 //=============================================================
@@ -100,31 +97,4 @@ func authDF(userToken string) (*userapi.User, error) {
 
 func dfUser(user *userapi.User) string {
 	return user.Name
-}
-
-//====================================================
-//call recharge api
-//====================================================
-
-func couponRecharge(adminToken, couponSerial, username, namespace string, amount float32) error {
-	body := fmt.Sprintf(
-		`{"namespace":"%s", "amount":%.3f, "reason":"%s", "user":"%s"}`,
-		namespace, amount, couponSerial, username,
-	)
-
-	//RechargeSercice1 := "http://datafoundry.recharge.app.dataos.io:80"
-	url := fmt.Sprintf("%s/charge/v1/couponrecharge", RechargeSercice)
-
-	response, data, err := common.RemoteCallWithJsonBody("POST", url, adminToken, "", []byte(body))
-	if err != nil {
-		logger.Error("recharge err: %v", err)
-		return err
-	}
-
-	if response.StatusCode != http.StatusOK {
-		logger.Info("makeRecharge remote (%s) status code: %d. data=%s", url, response.StatusCode, string(data))
-		return fmt.Errorf("makeRecharge remote (%s) status code: %d.", url, response.StatusCode)
-	}
-
-	return nil
 }
