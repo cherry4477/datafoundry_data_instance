@@ -31,7 +31,7 @@ const (
 	ErrorCodeInvalidParameters = 1307
 	ErrorCodeCreateInstance    = 1308
 	ErrorCodeGrantUser         = 1309
-	ErrorCodeDeleteCoupon      = 1310
+	ErrorCodeQueryServices     = 1310
 	ErrorCodeGetCoupon         = 1311
 	ErrorCodeQueryCoupons      = 1312
 	ErrorCodeCallRecharge      = 1313
@@ -58,7 +58,7 @@ func init() {
 	initError(ErrorCodeInvalidParameters, "invalid parameters")
 
 	initError(ErrorCodeCreateInstance, "failed to create Instance")
-	//initError(ErrorCodeUseCoupon, "failed to use a coupon")
+	initError(ErrorCodeQueryServices, "failed to query service")
 	//initError(ErrorCodeProvideCoupons, "failed to provide coupons")
 	//initError(ErrorCodeGetCoupon, "failed to retrieve coupon")
 	//initError(ErrorCodeQueryCoupons, "failed to query coupons")

@@ -28,6 +28,43 @@ var (
 
 var logger = log.GetLogger()
 
+func QueryServiceList(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	logger.Info("Request url: GET %v.", r.URL)
+
+	logger.Info("Begin query service list handler.")
+
+	username, e := validateAuth(r.Header.Get("Authorization"))
+	if e != nil {
+		JsonResult(w, http.StatusUnauthorized, e, nil)
+		return
+	}
+	logger.Debug("username:%v", username)
+
+	db := models.GetDB()
+	if db == nil {
+		logger.Warn("Get db is nil.")
+		JsonResult(w, http.StatusInternalServerError, GetError(ErrorCodeDbNotInitlized), nil)
+		return
+	}
+
+	r.ParseForm()
+
+	kind := r.Form.Get("kind")
+
+	offset, size := OptionalOffsetAndSize(r, 30, 1, 100)
+	orderBy := models.ValidateOrderBy(r.Form.Get("orderby"))
+	sortOrder := models.ValidateSortOrder(r.Form.Get("sortorder"), false)
+
+	count, apps, err := models.QueryServices(db, kind, orderBy, sortOrder, offset, size)
+	if err != nil {
+		JsonResult(w, http.StatusBadRequest, GetError2(ErrorCodeQueryServices, err.Error()), nil)
+		return
+	}
+
+	logger.Info("End query service list handler.")
+	JsonResult(w, http.StatusOK, nil, NewQueryListResult(count, apps))
+}
+
 func CreateInstance(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	logger.Info("Request url: GET %v.", r.URL)
 	logger.Info("Begin create instance handler.")
@@ -59,7 +96,7 @@ func CreateInstance(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	instance := models.Instance{
 		Host:              mysqlHost,
 		Port:              mysqlPort,
-		Instance_name:     dbname,
+		Instance_data:     dbname,
 		Instance_username: newUsername,
 		Instance_password: newPassword,
 		Uri:               "mysql://" + newUsername + ":" + newPassword + "@" + mysqlHost + ":" + mysqlPort + "/" + dbname,
