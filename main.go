@@ -8,9 +8,7 @@ import (
 	"github.com/asiainfoLDP/datafoundry_data_instance/models"
 	"github.com/asiainfoLDP/datafoundry_data_instance/router"
 
-	"github.com/asiainfoLDP/datahub_commons/httputil"
 	"net/http"
-	"time"
 )
 
 const SERVERPORT = 8574
@@ -52,7 +50,7 @@ func main() {
 	logger.Debug("address: %v", address)
 
 	logger.Info("Listening http at: %s", address)
-	err := http.ListenAndServe(address, httputil.TimeoutHandler(initRouter, 2500*time.Millisecond, ""))
+	err := http.ListenAndServe(address, initRouter)
 	if err != nil {
 		logger.Error("http listen and server err: %v", err)
 		return
