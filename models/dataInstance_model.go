@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -28,7 +27,7 @@ type createResult struct {
 }
 
 type retrieveResult struct {
-	Service_id    int    `json:"service_id"`
+	Service_id    string `json:"service_id"`
 	Class         string `json:"class"`
 	Provider      string `json:"provider"`
 	Instance_data string `json:"instance_data"`
@@ -261,15 +260,10 @@ type ServiceInfo struct {
 }
 
 func GetServiceInfo(db *sql.DB, serviceId string) (*ServiceInfo, error) {
-	id, err := strconv.Atoi(serviceId)
-	if err != nil {
-		logger.Error("Atoi err: %v.", err)
-		return nil, err
-	}
 	sql := "select SERVICE_ADDR, SERVICE_PORT, USERNAME, PASSWORD, SERVICE_DATA from DF_DATA_INSTANCE_SERVICE where SERVICE_ID = ?"
 
 	info := ServiceInfo{}
-	err = db.QueryRow(sql, id).Scan(&info.Address, &info.Port, &info.Username, &info.Password, &info.Service_data)
+	err := db.QueryRow(sql, serviceId).Scan(&info.Address, &info.Port, &info.Username, &info.Password, &info.Service_data)
 	if err != nil {
 		logger.Error("Scan err: %v.", err)
 		return nil, err

@@ -11,6 +11,7 @@ import (
 	"github.com/asiainfoLDP/datafoundry_data_instance/models"
 	"github.com/julienschmidt/httprouter"
 	"io"
+	mathrand "math/rand"
 	"net/http"
 	"os"
 )
@@ -187,4 +188,16 @@ func validateAuth(token string) (string, *Error) {
 
 func canEditSaasApps(username string) bool {
 	return username == "datafoundry"
+}
+
+func genUUID() string {
+	bs := make([]byte, 16)
+	_, err := rand.Read(bs)
+	if err != nil {
+		logger.Warn("genUUID error: ", err.Error())
+
+		mathrand.Read(bs)
+	}
+
+	return fmt.Sprintf("%X-%X-%X-%X-%X", bs[0:4], bs[4:6], bs[6:8], bs[8:10], bs[10:])
 }

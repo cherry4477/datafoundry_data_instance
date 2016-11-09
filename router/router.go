@@ -62,6 +62,6 @@ func InitRouter() *httprouter.Router {
 
 func NewRouter(router *httprouter.Router) {
 	logger.Info("new router.")
-	router.GET("/integration/v1/services", api.TimeoutHandle(20000*time.Millisecond, api.QueryServiceList))
-	router.POST("/integration/v1/instance/:id", api.TimeoutHandle(20000*time.Millisecond, api.CreateInstance))
+	router.GET("/integration/v1/services", api.TimeoutHandle(30000*time.Millisecond, api.QueryServiceList))
+	router.POST("/integration/v1/instance/:id", api.TimeoutHandle(30000*time.Millisecond, api.CreateInstance))
 }
