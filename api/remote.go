@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	GeneralRemoteCallTimeout = 10 // seconds
+	RemoteAddr = "dev.dataos.io:8443"
 )
 
 //=================================================
@@ -24,7 +24,7 @@ var (
 func BuildServiceUrlPrefixFromEnv(name string, isHttps bool, addrEnv string, portEnv string) string {
 	var addr string
 	if models.SetPlatform {
-		addr = "dev.dataos.io:8443"
+		addr = RemoteAddr
 	} else {
 		addr = os.Getenv(addrEnv)
 	}

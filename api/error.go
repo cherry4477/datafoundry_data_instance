@@ -32,7 +32,7 @@ const (
 	ErrorCodeCreateInstance    = 1308
 	ErrorCodeGrantUser         = 1309
 	ErrorCodeQueryServices     = 1310
-	ErrorCodeGetCoupon         = 1311
+	ErrorCodeGetServiceInfo    = 1311
 	ErrorCodeQueryCoupons      = 1312
 	ErrorCodeCallRecharge      = 1313
 	ErrorCodeGetCouponById     = 1314

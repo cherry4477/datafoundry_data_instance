@@ -21,9 +21,9 @@ const (
 )
 
 var (
-	mysqlHost     = getenv("REMOTEHOST")
-	mysqlPort     = getenv("REMOTEPORT")
-	mysqlPassword = getenv("REMOTEPASSWORD")
+//mysqlHost     = getenv("REMOTEHOST")
+//mysqlPort     = getenv("REMOTEPORT")
+//mysqlPassword = getenv("REMOTEPASSWORD")
 )
 
 var logger = log.GetLogger()
@@ -66,7 +66,7 @@ func QueryServiceList(w http.ResponseWriter, r *http.Request, params httprouter.
 }
 
 func CreateInstance(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	logger.Info("Request url: GET %v.", r.URL)
+	logger.Info("Request url: POST %v.", r.URL)
 	logger.Info("Begin create instance handler.")
 
 	db := models.GetDB()
@@ -83,23 +83,28 @@ func CreateInstance(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	}
 	logger.Debug("username:%v", username)
 
-	r.ParseForm()
-	dbname := r.Form.Get("name")
-	logger.Debug("name: %s.", dbname)
+	serviceId := params.ByName("id")
+	serviceinfo, err := models.GetServiceInfo(db, serviceId)
+	if err != nil {
+		logger.Error("Catch err: %v", err)
+		JsonResult(w, http.StatusBadRequest, GetError2(ErrorCodeGetServiceInfo, err.Error()), nil)
+		return
+	}
 
-	newUsername, newPassword, err := grant(dbname)
+	newUsername, newPassword, err := grant(serviceinfo)
 	if err != nil {
 		logger.Error("Catch err: %v.", err)
 		JsonResult(w, http.StatusBadRequest, GetError2(ErrorCodeGrantUser, err.Error()), nil)
+		return
 	}
 
 	instance := models.Instance{
-		Host:              mysqlHost,
-		Port:              mysqlPort,
-		Instance_data:     dbname,
+		Host:              serviceinfo.Address,
+		Port:              serviceinfo.Port,
+		Instance_data:     serviceinfo.Service_data,
 		Instance_username: newUsername,
 		Instance_password: newPassword,
-		Uri:               "mysql://" + newUsername + ":" + newPassword + "@" + mysqlHost + ":" + mysqlPort + "/" + dbname,
+		Uri:               "mysql://" + newUsername + ":" + newPassword + "@" + serviceinfo.Address + ":" + serviceinfo.Port + "/" + serviceinfo.Service_data,
 		Username:          username,
 	}
 
@@ -114,9 +119,9 @@ func CreateInstance(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	JsonResult(w, http.StatusOK, nil, result)
 }
 
-func grant(dbname string) (string, string, error) {
+func grant(info *models.ServiceInfo) (string, string, error) {
 	//初始化mysql的链接串
-	db, err := sql.Open("mysql", "root:"+mysqlPassword+"@tcp("+mysqlHost+":"+mysqlPort+")/")
+	db, err := sql.Open("mysql", info.Username+":"+info.Password+"@tcp("+info.Address+":"+info.Port+")/")
 
 	if err != nil {
 		logger.Error("sql open err: %v", err)
@@ -133,7 +138,7 @@ func grant(dbname string) (string, string, error) {
 	newusername := getguid()[0:15]
 	newpassword := getguid()[0:15]
 
-	_, err = db.Query("GRANT SELECT ON " + dbname + ".* TO '" + newusername + "'@'%' IDENTIFIED BY '" + newpassword + "'")
+	_, err = db.Query("GRANT SELECT ON " + info.Service_data + ".* TO '" + newusername + "'@'%' IDENTIFIED BY '" + newpassword + "'")
 	if err != nil {
 		logger.Error("db query err: %v", err)
 		return "", "", err

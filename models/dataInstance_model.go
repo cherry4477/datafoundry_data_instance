@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -27,6 +28,7 @@ type createResult struct {
 }
 
 type retrieveResult struct {
+	Service_id    int    `json:"service_id"`
 	Class         string `json:"class"`
 	Provider      string `json:"provider"`
 	Instance_data string `json:"instance_data"`
@@ -91,7 +93,7 @@ func QueryServices(db *sql.DB, class, provider, orderBy string, sortOrder bool, 
 
 	switch strings.ToLower(orderBy) {
 	default:
-		orderBy = "ID"
+		orderBy = "SERVICE_ID"
 		sortOrder = false
 	case "createtime":
 		orderBy = "CREATE_TIME"
@@ -171,7 +173,7 @@ func queryCoupons(db *sql.DB, sqlWhere, orderBy string, limit int, offset int64,
 	}
 
 	sql_str := fmt.Sprintf(`select
-					INSTANCE_DATA, SERVICE_CLASS, SERVICE_PROVIDER, DESCRIPTION, IMAGEURL
+					SERVICE_ID, SERVICE_DATA, SERVICE_CLASS, SERVICE_PROVIDER, DESCRIPTION, IMAGEURL
 					from DF_DATA_INSTANCE_SERVICE
 					%s %s
 					limit %d
@@ -195,7 +197,8 @@ func queryCoupons(db *sql.DB, sqlWhere, orderBy string, limit int, offset int64,
 	for rows.Next() {
 		service := &retrieveResult{}
 		err := rows.Scan(
-			&service.Instance_data, &service.Class, &service.Provider, &service.Description, &service.ImageUrl,
+			&service.Service_id, &service.Instance_data, &service.Class, &service.Provider,
+			&service.Description, &service.ImageUrl,
 		)
 		if err != nil {
 			logger.Error("Scan err : %v", err)
@@ -247,4 +250,31 @@ func validateOffsetAndLimit(count int64, offset *int64, limit *int) {
 	if *offset+int64(*limit) > count {
 		*limit = int(count - *offset)
 	}
+}
+
+type ServiceInfo struct {
+	Address      string
+	Port         string
+	Username     string
+	Password     string
+	Service_data string
+}
+
+func GetServiceInfo(db *sql.DB, serviceId string) (*ServiceInfo, error) {
+	id, err := strconv.Atoi(serviceId)
+	if err != nil {
+		logger.Error("Atoi err: %v.", err)
+		return nil, err
+	}
+	sql := "select SERVICE_ADDR, SERVICE_PORT, USERNAME, PASSWORD, SERVICE_DATA from DF_DATA_INSTANCE_SERVICE where SERVICE_ID = ?"
+
+	info := ServiceInfo{}
+	err = db.QueryRow(sql, id).Scan(&info.Address, &info.Port, &info.Username, &info.Password, &info.Service_data)
+	if err != nil {
+		logger.Error("Scan err: %v.", err)
+		return nil, err
+	}
+	logger.Debug("service info: %v.", info)
+
+	return &info, nil
 }
