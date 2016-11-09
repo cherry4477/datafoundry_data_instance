@@ -48,14 +48,14 @@ func QueryServiceList(w http.ResponseWriter, r *http.Request, params httprouter.
 	}
 
 	r.ParseForm()
-
-	kind := r.Form.Get("kind")
+	class := r.Form.Get("class")
+	provider := r.Form.Get("provider")
 
 	offset, size := OptionalOffsetAndSize(r, 30, 1, 100)
 	orderBy := models.ValidateOrderBy(r.Form.Get("orderby"))
 	sortOrder := models.ValidateSortOrder(r.Form.Get("sortorder"), false)
 
-	count, apps, err := models.QueryServices(db, kind, orderBy, sortOrder, offset, size)
+	count, apps, err := models.QueryServices(db, class, provider, orderBy, sortOrder, offset, size)
 	if err != nil {
 		JsonResult(w, http.StatusBadRequest, GetError2(ErrorCodeQueryServices, err.Error()), nil)
 		return

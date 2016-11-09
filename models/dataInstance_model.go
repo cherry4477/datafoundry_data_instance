@@ -59,7 +59,7 @@ func CreateInstance(db *sql.DB, instanceInfo *Instance) (*createResult, error) {
 	return &result, err
 }
 
-func QueryServices(db *sql.DB, kind, orderBy string, sortOrder bool, offset int64, limit int) (int64, []*retrieveResult, error) {
+func QueryServices(db *sql.DB, class, provider, orderBy string, sortOrder bool, offset int64, limit int) (int64, []*retrieveResult, error) {
 	logger.Info("Begin get coupon list model.")
 
 	sqlParams := make([]interface{}, 0, 4)
@@ -67,14 +67,24 @@ func QueryServices(db *sql.DB, kind, orderBy string, sortOrder bool, offset int6
 	// ...
 
 	sqlWhere := ""
-	kind = strings.ToLower(kind)
-	if kind != "" {
+	class = strings.ToLower(class)
+	if class != "" {
 		if sqlWhere == "" {
-			sqlWhere = "KIND = ?"
+			sqlWhere = "SERVICE_CLASS = ?"
 		} else {
-			sqlWhere = sqlWhere + " and KIND = ?"
+			sqlWhere = sqlWhere + " and SERVICE_CLASS = ?"
 		}
-		sqlParams = append(sqlParams, kind)
+		sqlParams = append(sqlParams, class)
+	}
+
+	provider = strings.ToLower(provider)
+	if provider != "" {
+		if sqlWhere == "" {
+			sqlWhere = "SERVICE_PROVIDER = ?"
+		} else {
+			sqlWhere = sqlWhere + " and SERVICE_PROVIDER = ?"
+		}
+		sqlParams = append(sqlParams, provider)
 	}
 
 	// ...
