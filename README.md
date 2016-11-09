@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS DF_DATA_INSTANCE
     INSTANCE_ID          BIGINT NOT NULL AUTO_INCREMENT,
     HSOTNAME             VARCHAR(128) NOT NULL,
     PORT                 VARCHAR(128) NOT NULL,
-    INSTANCE_DATA	       VARCHAR(128) NOT NULL,
+    INSTANCE_DATA	     VARCHAR(128) NOT NULL,
     INSTANCE_USERNAME    VARCHAR(128) NOT NULL,
     INSTANCE_PASSWORD    VARCHAR(128) NOT NULL,
     URI                  VARCHAR(256) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS DF_DATA_INSTANCE_SERVICE
     SERVICE_PORT         VARCHAR(10)  NOT NULL,
     USERNAME             VARCHAR(128) NOT NULL,
     PASSWORD             VARCHAR(128) NOT NULL,
-    SERVICE_CLASS	       VARCHAR(128) NOT NULL,
+    SERVICE_CLASS	     VARCHAR(128) NOT NULL,
     SERVICE_PROVIDER     VARCHAR(128) NOT NULL,
     DESCRIPTION          VARCHAR(1024) NOT NULL,
     IMAGEURL             VARCHAR(256) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS DF_DATA_INSTANCE_SERVICE
 
 ## API设计
 
-### GET /integration/v1/instance?class={class}&provider={provider}
+### GET /integration/v1/services?class={class}&provider={provider}
 
 查询服务列表
 
@@ -56,6 +56,7 @@ code: 返回码
 msg: 返回信息
 data.total
 data.results
+data.results[0].service_id
 data.results[0].class
 data.results[0].provider
 data.results[0].service_data
