@@ -31,6 +31,7 @@ type retrieveResult struct {
 	Class         string `json:"class"`
 	Provider      string `json:"provider"`
 	Instance_data string `json:"instance_data"`
+	Data_name     string `json:"data_name"`
 	Description   string `json:"description"`
 	ImageUrl      string `json:"image_url"`
 }
@@ -172,7 +173,7 @@ func queryCoupons(db *sql.DB, sqlWhere, orderBy string, limit int, offset int64,
 	}
 
 	sql_str := fmt.Sprintf(`select
-					SERVICE_ID, SERVICE_DATA, SERVICE_CLASS, SERVICE_PROVIDER, DESCRIPTION, IMAGEURL
+					SERVICE_ID, SERVICE_DATA, DATA_NAME, SERVICE_CLASS, SERVICE_PROVIDER, DESCRIPTION, IMAGEURL
 					from DF_DATA_INSTANCE_SERVICE
 					%s %s
 					limit %d
@@ -196,7 +197,7 @@ func queryCoupons(db *sql.DB, sqlWhere, orderBy string, limit int, offset int64,
 	for rows.Next() {
 		service := &retrieveResult{}
 		err := rows.Scan(
-			&service.Service_id, &service.Instance_data, &service.Class, &service.Provider,
+			&service.Service_id, &service.Instance_data, &service.Data_name, &service.Class, &service.Provider,
 			&service.Description, &service.ImageUrl,
 		)
 		if err != nil {

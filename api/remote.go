@@ -90,8 +90,6 @@ func authDF(userToken string) (*userapi.User, error) {
 		return nil, osRest.Err
 	}
 
-	logger.Info("username:%v", u.Name)
-
 	return u, nil
 }
 
