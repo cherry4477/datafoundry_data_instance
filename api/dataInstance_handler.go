@@ -145,6 +145,7 @@ func grant(info *models.ServiceInfo) (string, string, error) {
 		return "", "", err
 	}
 
+	logger.Info("username: %s, password: %s.", newusername, newpassword)
 	return newusername, newpassword, nil
 }
 
