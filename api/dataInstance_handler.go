@@ -82,7 +82,7 @@ func CreateInstance(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 		JsonResult(w, http.StatusUnauthorized, e, nil)
 		return
 	}
-	logger.Debug("username:%v", username)
+	logger.Info("username:%v", username)
 
 	serviceId := params.ByName("id")
 	serviceinfo, err := models.GetServiceInfo(db, serviceId)
