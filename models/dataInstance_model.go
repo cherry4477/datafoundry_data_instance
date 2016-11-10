@@ -17,7 +17,7 @@ type Instance struct {
 	Username          string `json:"username"`
 }
 
-type createResult struct {
+type CreateResult struct {
 	Uri      string `json:"uri"`
 	Hostname string `json:"hostname"`
 	Port     string `json:"port"`
@@ -35,7 +35,7 @@ type retrieveResult struct {
 	ImageUrl      string `json:"image_url"`
 }
 
-func CreateInstance(db *sql.DB, instanceInfo *Instance) (*createResult, error) {
+func CreateInstance(db *sql.DB, instanceInfo *Instance) (*CreateResult, error) {
 	logger.Info("Begin create a data instance model.")
 
 	sqlstr := fmt.Sprintf(`insert into DF_DATA_INSTANCE (
@@ -52,7 +52,7 @@ func CreateInstance(db *sql.DB, instanceInfo *Instance) (*createResult, error) {
 		return nil, err
 	}
 
-	result := createResult{Uri: instanceInfo.Uri, Hostname: instanceInfo.Host, Port: instanceInfo.Port,
+	result := CreateResult{Uri: instanceInfo.Uri, Hostname: instanceInfo.Host, Port: instanceInfo.Port,
 		Name: instanceInfo.Instance_data, Username: instanceInfo.Instance_username,
 		Password: instanceInfo.Instance_password}
 

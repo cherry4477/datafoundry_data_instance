@@ -92,29 +92,38 @@ func CreateInstance(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 		return
 	}
 
-	newUsername, newPassword, err := grant(serviceinfo)
+	//newUsername, newPassword, err := grant(serviceinfo)
 	if err != nil {
 		logger.Error("Catch err: %v.", err)
 		JsonResult(w, http.StatusBadRequest, GetError2(ErrorCodeGrantUser, err.Error()), nil)
 		return
 	}
 
-	instance := models.Instance{
-		Host:              serviceinfo.Address,
-		Port:              serviceinfo.Port,
-		Instance_data:     serviceinfo.Service_data,
-		Instance_username: newUsername,
-		Instance_password: newPassword,
-		Uri:               "mysql://" + newUsername + ":" + newPassword + "@" + serviceinfo.Address + ":" + serviceinfo.Port + "/" + serviceinfo.Service_data,
-		Username:          username,
+	//instance := models.Instance{
+	//	Host:              serviceinfo.Address,
+	//	Port:              serviceinfo.Port,
+	//	Instance_data:     serviceinfo.Service_data,
+	//	Instance_username: newUsername,
+	//	Instance_password: newPassword,
+	//	Uri:               "mysql://" + newUsername + ":" + newPassword + "@" + serviceinfo.Address + ":" + serviceinfo.Port + "/" + serviceinfo.Service_data,
+	//	Username:          username,
+	//}
+	result := models.CreateResult{
+		Uri: "mysql://" + serviceinfo.Username + ":" + serviceinfo.Password +
+			"@" + serviceinfo.Address + ":" + serviceinfo.Port + "/" + serviceinfo.Service_data,
+		Hostname: serviceinfo.Address,
+		Port:     serviceinfo.Port,
+		Name:     serviceinfo.Service_data,
+		Username: serviceinfo.Username,
+		Password: serviceinfo.Password,
 	}
 
-	result, err := models.CreateInstance(db, &instance)
-	if err != nil {
-		logger.Error("Create plan err: %v", err)
-		JsonResult(w, http.StatusBadRequest, GetError2(ErrorCodeCreateInstance, err.Error()), nil)
-		return
-	}
+	//result, err := models.CreateInstance(db, &instance)
+	//if err != nil {
+	//	logger.Error("Create plan err: %v", err)
+	//	JsonResult(w, http.StatusBadRequest, GetError2(ErrorCodeCreateInstance, err.Error()), nil)
+	//	return
+	//}
 
 	logger.Info("End create instance handler.")
 	JsonResult(w, http.StatusOK, nil, result)
